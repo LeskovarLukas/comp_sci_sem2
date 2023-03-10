@@ -24,7 +24,7 @@ def define_triangle_vertices(P1:np.ndarray, P2:np.ndarray, P3:np.ndarray) -> Tup
     #       from crashing.
 
     P1P2 = P2 - P1
-    P2P3 = P3 - P2
+    P2P3 = P3 - P2 
     P3P1 = P1 - P3
     ### END STUDENT CODE
 
@@ -37,11 +37,15 @@ def compute_lengths(P1P2:np.ndarray, P2P3:np.ndarray, P3P1:np.ndarray) -> List[f
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    vectors = np.ndarray([P1P2, P2P3, P3P1])
+    vectors = np.array([P1P2, P2P3, P3P1])
     norms = [0., 0., 0.]
 
     for i in range(0, vectors.shape[0]):
-        norms[i] = np.square(vectors[i])
+        norm = 0
+        for j in range(0, vectors[i].shape[0]):
+            norm += vectors[i][j] ** 2
+
+        norms[i] = np.sqrt(norm)
 
     ### END STUDENT CODE
 
@@ -54,8 +58,11 @@ def compute_normal_vector(P1P2:np.ndarray, P2P3:np.ndarray, P3P1:np.ndarray) -> 
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    n = np.zeros(3)
-    n_normalized = np.zeros(3)
+    A = P1P2
+    B = -P3P1
+
+    n = np.cross(A, B)
+    n_normalized = n / np.linalg.norm(n)
     ### END STUDENT CODE
 
     return n, n_normalized
@@ -67,7 +74,7 @@ def compute_triangle_area(n:np.ndarray) -> float:
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    area = 0
+    area = np.linalg.norm(n) / 2
     ### END STUDENT CODE
 
     return area
@@ -79,7 +86,14 @@ def compute_angles(P1P2:np.ndarray,P2P3:np.ndarray,P3P1:np.ndarray) -> Tuple[flo
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    alpha, beta, gamma = 0., 0., 0.
+    alpha = np.arccos(np.dot(P1P2, -P3P1) / (np.linalg.norm(P1P2) * np.linalg.norm(-P3P1)))
+    beta = np.arccos(np.dot(P2P3, -P1P2) / (np.linalg.norm(P2P3) * np.linalg.norm(-P1P2)))
+    gamma = np.arccos(np.dot(P3P1, -P2P3) / (np.linalg.norm(P3P1) * np.linalg.norm(-P2P3)))
+
+    alpha = np.degrees(alpha)
+    beta = np.degrees(beta)
+    gamma = np.degrees(gamma)
+
     ### END STUDENT CODE
 
     return alpha, beta, gamma

@@ -22,7 +22,7 @@ def convert(img:Image.Image) -> np.ndarray:
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    out = np.zeros((512,512,3))
+    out = np.array(img) / 255
 
     ### END STUDENT CODE
     return out
@@ -39,6 +39,12 @@ def switch_channels(img:np.ndarray) -> np.ndarray:
 
     out = np.zeros(img.shape)
 
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            out[i,j,0] = img[i,j,1]
+            out[i,j,1] = img[i,j,0]
+            out[i,j,2] = img[i,j,2]
+
     ### END STUDENT CODE
 
     return out
@@ -53,7 +59,8 @@ def image_mark_green(img:np.ndarray) -> np.ndarray:
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    mask = np.zeros(img.shape)
+    mask = np.where(img[:, :, 1] >= 0.7, 1, 0)
+
 
     ### END STUDENT CODE
 
