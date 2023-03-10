@@ -108,11 +108,11 @@ def vector_X_matrix(v:np.ndarray, M:np.ndarray) -> np.ndarray:
 
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
-    r = np.zeros((v.shape[0], M.shape[1]))
+    r = np.zeros(M.shape[1])
 
-    for i in range(0, v.shape[0]):
-        for j in range(0, M.shape[1]):
-            r[j][i] = v[i] * M[j][i]
+    for i in range(0, M.shape[1]):
+        for j in range(0, v.shape[0]):
+            r[i] += v[j] * M[j][i]
             
     ### END STUDENT CODE
 
@@ -127,11 +127,12 @@ def matrix_X_vector(M:np.ndarray, v:np.ndarray) -> np.ndarray:
 
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
-    r = np.zeros((M.shape[0], v.shape[0]))
+    r = np.zeros(M.shape[0])
 
     for i in range(0, M.shape[0]):
         for j in range(0, v.shape[0]):
-            r[i][j] = v[j] * M[i][j]
+            r[i] += M[i][j] * v[j]
+
     ### END STUDENT CODE
 
     return r
