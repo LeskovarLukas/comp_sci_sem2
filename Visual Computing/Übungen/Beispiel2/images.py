@@ -77,7 +77,10 @@ def image_masked(img:np.ndarray, mask:np.ndarray) -> np.ndarray:
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    out = np.zeros(img.shape)
+    mask = np.atleast_3d(1 - mask)
+    print(mask.shape)
+
+    out = np.multiply(img, mask)
 
     ### END STUDENT CODE
 
