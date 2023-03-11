@@ -96,7 +96,7 @@ def grayscale(img:np.ndarray) -> np.ndarray:
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    out = np.zeros(img.shape)
+    out = utils.rgb2gray(img)
 
     ### END STUDENT CODE
 
@@ -112,7 +112,9 @@ def cut_and_reshape(img_gray:np.ndarray) -> np.ndarray:
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    out = np.zeros(img_gray.shape)
+    left = img_gray[:, :img_gray.shape[1]//2]
+    right = img_gray[:, img_gray.shape[1]//2:]
+    out = np.concatenate((right, left), axis=0)
 
     ### END STUDENT CODE
 
@@ -130,8 +132,16 @@ def filter_image(img:np.ndarray) -> np.ndarray:
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    out = np.zeros(img.shape)
+    filter_sum = np.sum(gaussian)
 
+    out = np.zeros(img.shape)
+    img = np.pad(img, ((2, 2), (2, 2), (0, 0)), 'constant')
+
+    for x in range(0, out.shape[0]):
+        for y in range(0, out.shape[1]):
+            sub_img = np.multiply(img[x:x+5, y:y+5], gaussian[:, :, np.newaxis])
+            out[x, y] = np.sum(sub_img, axis=(0, 1)) / filter_sum
+    
     ### END STUDENT CODE
 
     return out
@@ -146,7 +156,10 @@ def horizontal_edges(img:np.ndarray) -> np.ndarray:
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    out = np.zeros(img.shape)
+    kernel = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
+    out = scipy.ndimage.correlate(img, kernel, mode='constant')
+
+    #out = np.zeros(img.shape)
 
     ### END STUDENT CODE
 
