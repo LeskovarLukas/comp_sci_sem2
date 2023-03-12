@@ -14,7 +14,37 @@ def define_transformations() -> List[np.ndarray]:
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    t1, t2, t3, t4 = np.zeros((3,3)), np.zeros((3,3)), np.zeros((3,3)), np.zeros((3,3)),
+    t1, t2, t3, t4 = np.zeros((3,3)), np.zeros((3,3)), np.zeros((3,3)), np.zeros((3,3))
+
+    t1 = mtranslate(-3, 0) @ mrotate(55)
+    t2 = mrotate(55) @ mtranslate(-3, 0)
+    t3 = mtranslate(3, 1) @ mrotate(70) @ mscale(3, 2)
+    
+    # t4 is a shear by theta (roughly 53.13 degrees) that is rotated 
+    #define known properties
+    diag_1 = 3 * np.sqrt(2)
+    diag_2 = np.sqrt(2)
+
+    #calculate side length
+    side = np.sqrt((diag_1 / 2)**2 + (diag_2 / 2)**2)
+
+    #calculate inner angle
+    alpha = 2 * np.arctan((diag_2 / 2) / (diag_1 / 2))
+
+    #calculate shear angle
+    theta = (np.pi / 2 - alpha)
+
+    #calculate shear matrix
+    xShear = np.array([[1, np.tan(theta), 0], [0, 1, 0], [0, 0, 1]])
+    
+    # calculate long side after shear
+    error = 1 / np.sin(alpha)
+
+    #calculate translation matrix   
+    t4 = mrotate(np.rad2deg(theta + alpha / 2))
+    t4 = t4 @ xShear
+    t4 = t4 @ mscale(1, 1 / error)
+    t4 = t4 @ mscale(side, side)
 
     ### END STUDENT CODE
 
@@ -30,7 +60,7 @@ def mscale(sx : float, sy : float) -> np.ndarray:
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    m = np.zeros((3,3))
+    m = np.array([[sx, 0, 0], [0, sy, 0], [0, 0, 1]])                               
 
     ### END STUDENT CODE
 
@@ -46,7 +76,8 @@ def mrotate(angle : float) -> np.ndarray:
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    m = np.zeros((3,3))
+    angle = np.deg2rad(angle)
+    m = np.array([[np.cos(angle), -np.sin(angle), 0], [np.sin(angle), np.cos(angle), 0], [0, 0, 1]])
 
     ### END STUDENT CODE
 
@@ -62,7 +93,7 @@ def mtranslate(tx : float, ty : float) -> np.ndarray:
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    m = np.zeros((3,3))
+    m = np.array([[1, 0, tx], [0, 1, ty], [0, 0, 1]])
 
     ### END STUDENT CODE
 
@@ -78,7 +109,11 @@ def transform_vertices(v : np.ndarray, m : np.ndarray) -> np.ndarray:
 	# NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    out = np.zeros((m.shape[0],v.shape[1]))
+    out = np.zeros(v.shape)
+
+    out = m @ v
+
+    print(out)
 
     ### END STUDENT CODE
 
